@@ -1,0 +1,24 @@
+import React, { useState, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
+function SocketFront() {
+    const ENDPOINT = 'http://localhost:5000'
+    let location = useLocation()
+    const [members, setMembers] = useState([])
+    const params = new URLSearchParams(window.location.search)
+    const roomid = parseInt(params.get('room'))
+    useEffect(() => {
+        fetch(ENDPOINT + `/roomdata/${roomid}`)
+            .then(x => (x.json()))
+            .then(x => setMembers(x.players))
+    }, [])
+    return (
+        <div>
+            <div>
+                {members.map((member, key) => {
+                    return <p key={key}>{member.value}</p>
+                })}
+            </div>
+        </div>
+    )
+}
+export default SocketFront

@@ -85,19 +85,19 @@ async function created(roomid, playerid, player) {
         return { exists: 'error' }
     }
 }
-// app.post('/create', (req, res) => {
-//     RoomData.findOne({ Id: req.body.room })
-//         .then((obj) => {
-//             if (obj !== null) {
-//                 res.send({ exists: 1 })
-//             }
-//             else {
-//                 // const newroomdata = new RoomData({ Id: req.body.room, Players: [req.body.name] });
-//                 // newroomdata.save()
-//                 res.send({ exists: 0 })
-//             }
-//         })
-// })
+app.post('/create', (req, res) => {
+    RoomData.findOne({ Id: req.body.room })
+        .then((obj) => {
+            if (obj !== null) {
+                res.send({ exists: 1 })
+            }
+            else {
+                const newroomdata = new RoomData({ Id: req.body.room, Players: [req.body.name] });
+                newroomdata.save()
+                res.send({ exists: 0 })
+            }
+        })
+})
 
 app.get('/roomdata/:x', (req, res) => {
     RoomData.findOne({ Id: req.params.x })
@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
         log(player + ' has joined the room ' + roomid + ' with player id: ' + socket.id)
         joined(roomid, socket.id, player)
             .then(x => {
-                socket.emit('joined', x)
+                // socket.emit('joined', x)
             })
     })
 
@@ -121,17 +121,16 @@ io.on('connection', (socket) => {
         log(player + ' has created the room ' + roomid + ' with player id: ' + socket.id)
         created(roomid, socket.id, player)
             .then(x => {
-                socket.emit('created', x)
+                // socket.emit('created', x)
             })
     })
-    log('hi')
-    log(socket.id)
+
     socket.on('entered', ({ roomid }) => {
         socket.join(roomid)
     })
 
     socket.on('disconnecting', () => {
-        log("bye")
+        // log("bhadwa")
         log(socket.id)
         // Search the entire DB here for the socketid
     })

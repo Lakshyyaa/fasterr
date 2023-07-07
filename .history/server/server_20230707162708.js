@@ -92,8 +92,8 @@ async function created(roomid, playerid, player) {
 //                 res.send({ exists: 1 })
 //             }
 //             else {
-//                 // const newroomdata = new RoomData({ Id: req.body.room, Players: [req.body.name] });
-//                 // newroomdata.save()
+//                 const newroomdata = new RoomData({ Id: req.body.room, Players: [req.body.name] });
+//                 newroomdata.save()
 //                 res.send({ exists: 0 })
 //             }
 //         })
@@ -115,6 +115,7 @@ io.on('connection', (socket) => {
                 socket.emit('joined', x)
             })
     })
+    log(1212)
 
     socket.on('create', ({ roomid, player }) => {
         socket.join(roomid)
@@ -124,14 +125,13 @@ io.on('connection', (socket) => {
                 socket.emit('created', x)
             })
     })
-    log('hi')
-    log(socket.id)
+
     socket.on('entered', ({ roomid }) => {
         socket.join(roomid)
     })
 
     socket.on('disconnecting', () => {
-        log("bye")
+        // log("bhadwa")
         log(socket.id)
         // Search the entire DB here for the socketid
     })

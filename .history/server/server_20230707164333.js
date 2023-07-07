@@ -124,8 +124,7 @@ io.on('connection', (socket) => {
                 socket.emit('created', x)
             })
     })
-    log('hi')
-    log(socket.id)
+
     socket.on('entered', ({ roomid }) => {
         socket.join(roomid)
     })
