@@ -1,4 +1,3 @@
-// NAVBAR MOVING WITH INSPECT UP
 const bodyParser = require('body-parser');
 const express = require('express')
 const http = require('http');
