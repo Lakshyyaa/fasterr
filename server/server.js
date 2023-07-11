@@ -1,18 +1,12 @@
-// TRY STORING ALL IN AN AVL TREE INSTEAD MONGODB
-// FOR NOW JUST CHECK NAME, ROOM AND REDIRECT USING JWT
-// SAME NAME PROBLEM
-// JWT PROBLEM
-// PEOPLE ENTERING AFTER STARTING PROBLEM
-// DELAY AFTER CLICKING START PROBLEM
-// CORS PROBLEM
-const jwt = require('jsonwebtoken');
-const secretkey='lakshyabest'
+// NAVBAR MOVING WITH INSPECT UP
 const bodyParser = require('body-parser');
 const express = require('express')
 const http = require('http');
 const fetch = require('node-fetch')
 const { Buffer } = require('buffer');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const server = http.createServer(app);
@@ -23,7 +17,6 @@ const PORT = process.env.PORT || 5000
 
 const mongoose = require('mongoose');
 const { log } = require('console');
-const { type } = require('os');
 mongoose.connect('mongodb://127.0.0.1:27017/fingersDB')
     .then(() => console.log('connected to db'))
     .catch(() => console.log('error connectiong'))
@@ -87,6 +80,7 @@ async function removed(roomid, playerid) {
             const newerresult = await RoomData.deleteOne(
                 { Id: roomid }
             )
+            running = running.filter((element) => element !== roomid);
         }
     } catch (error) {
         console.error('error in removed', error);
@@ -96,6 +90,8 @@ async function removed(roomid, playerid) {
 app.post('/create', (req, res) => {
     RoomData.findOne({ Id: req.body.roomid })
         .then((obj) => {
+            let name = (req.body.player)
+            let room = (req.body.roomid)
             if (obj !== null) {
                 res.send({ exists: 1 })
             }
@@ -111,11 +107,19 @@ app.post('/create', (req, res) => {
 app.post('/join', (req, res) => {
     RoomData.findOne({ Id: req.body.roomid })
         .then((obj) => {
+            let name = (req.body.player)
+            let room = (req.body.roomid)
             if (obj == null) {
                 res.send({ exists: 1 })
             }
             else {
                 if (obj.Players.length < 5) {
+                    obj.Players.forEach(x => {
+                        if (x.value === name) {
+                            res.send({ exists: 3 })
+                            return
+                        }
+                    })
                     res.send({ exists: 2 })
                 }
                 else {
@@ -129,7 +133,6 @@ app.post('/join', (req, res) => {
 })
 
 
-
 app.get('/update/room=:roomId', (req, res) => {
     const roomId = req.params.roomId;
     RoomData.findOne({ Id: roomId })
@@ -141,24 +144,7 @@ app.get('/update/room=:roomId', (req, res) => {
         })
 });
 
-// fetch('https://api.github.com/repos/Lakshyyaa/testingcsv/contents/words.csv')
-//     .then(x => x.json())
-//     .then(y => {
-//         const encodedContent = y.content;
-//         const decodedContent = Buffer.from(encodedContent, 'base64').toString('utf-8');
-//         return (decodedContent.split('\n'));
-//     })
-//     .then(words => {
-//         let y = [];
-//         for (let i = 0; i < 2; i++) {
-//             y.push((words[Math.floor(Math.random() * 1000)].slice(1, -1)).toLowerCase())
-//         }
-//         log(y)
-//         log(typeof (y))
-//         return y
-//     })
-   
-
+let running = []
 
 io.on('connection', (socket) => {
     socket.on('add', ({ name, room }) => {
@@ -173,17 +159,13 @@ io.on('connection', (socket) => {
             .catch(err => {
                 console.error("error in on adding ", err)
             })
-        // log('hey the room is', y, ' name is ', name)
     })
     socket.on('progress', ({ name, progress }) => {
         let x = Array.from(socket.rooms);
         let y = (x[1])
-        // log('hey the room is', y, ' name is ', name, ' progress is ', progress)
         io.to(y).emit('progressupdate', { name, progress })
     })
     socket.on('started', (room) => {
-        // log('started in ', room, ' type is ', typeof (room))
-        // make it fetch the words and the timerloop
         fetch('https://api.github.com/repos/Lakshyyaa/testingcsv/contents/words.csv')
             .then(x => x.json())
             .then(y => {
@@ -193,15 +175,15 @@ io.on('connection', (socket) => {
             })
             .then(words => {
                 let y = [];
-                for (let i = 0; i < 2; i++) {
+                for (let i = 0; i < 18; i++) {
                     y.push((words[Math.floor(Math.random() * 1000)].slice(1, -1)).toLowerCase())
                 }
-                log(y)
-                log(typeof(y))
+
                 return y
             })
             .then(y => {
                 io.to(room).emit('startit', y)
+                running.push(room)
             })
 
     })
@@ -217,53 +199,21 @@ io.on('connection', (socket) => {
                 console.error("error in on disconnecting ", err)
             })
     })
+    socket.on('check', ({ room, name }) => {
+        let ans = 0
+        running.forEach((x) => {
+            if (x === room) {
+                ans++
+            }
+        })
+        if (ans > 0) {
+            socket.emit('checked', { check: 1, name: name })
+        }
+        else {
+            socket.emit('checked', { check: 0, name: name })
+        }
+    })
 })
-
-// const roomstuff = new RoomData({ Id: 5555, Players: [{ key: 89, value: 'laks' }] })
-// roomstuff.save()
-
-// async function joined(roomid, playerid, player) {
-//     try {
-//         let obj = await RoomData.findOne({ Id: roomid })
-//         if (obj == null) {
-//             return { exists: 'not' }
-//         }
-//         else if (obj.Players.length < 5) {
-//             const newpair = { key: playerid, value: player };
-//             const result = await RoomData.updateOne(
-//                 { Id: roomid },
-//                 { $push: { Players: newpair } })
-
-//             return { exists: 'complete' }
-//         }
-//         else {
-//             return { exists: 'full' };
-//         }
-//     }
-//     catch (err) {
-//         console.error("ERROR: " + err)
-//         return { exists: 'error' }
-//     }
-// }
-
-
-// async function created(roomid, playerid, player) {
-//     try {
-//         let obj = await RoomData.findOne({ Id: roomid })
-//         if (obj !== null) {
-//             return { exists: 'yes' }
-//         }
-//         else {
-//             const newroomdata = new RoomData({ Id: roomid, Players: [{ key: playerid, value: player }] });
-//             await newroomdata.save()
-//             return { exists: 'created' }
-//         }
-//     }
-//     catch (err) {
-//         console.log('Error: ' + err)
-//         return { exists: 'error' }
-//     }
-// }
 
 server.listen(PORT, () => {
     console.log("Begin")
