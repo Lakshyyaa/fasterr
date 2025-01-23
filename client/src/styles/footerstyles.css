@@ -1,0 +1,38 @@
+.footerdiv {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    position: fixed;    
+    bottom: 0;
+    left: 0;
+    background-color: #00b800;
+    height: 1.2rem;
+    width: 100%;
+    padding: 1rem;
+    z-index: -1;
+    color: black;
+}
+
+.github {
+    height: 1.5rem;
+}
+
+.twt {
+    height: 1.5rem;
+}
+
+.innerfooter {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.inner {
+    display: flex;
+    margin: 0 0.8rem
+}
+
+img {
+    padding: 0 0.8rem;
+}
+#madeby{
+    padding-top: 0.1rem;
+}

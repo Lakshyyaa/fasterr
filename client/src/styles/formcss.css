@@ -1,0 +1,68 @@
+.usernamediv {
+  font-family: 'Press Start 2P', cursive;
+}
+
+.inputname,
+.roomid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  border-style: none;
+}
+
+.createbtn,
+.sbmtbtn {
+  border-radius: .5rem;
+  height: 2.5rem;
+}
+
+.h1{
+  padding: 1rem;
+  font-size: 2.3rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  padding-top: 0;
+}
+
+.inpt,
+.rinpt {
+  text-align: center;
+  text-decoration: none;
+  width: 10rem;
+  height: 1.5rem;
+  border-color: #00b800;
+  border-style: solid;
+  border-radius: 0.3rem;
+}
+
+.inpt:focus,
+.rinpt:focus {
+  outline: 0
+}
+
+#formelement {
+  padding: 1rem;
+}
+
+.outprogress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inprogress {
+  display: flex;  
+  justify-content:space-between;
+  width: 19rem;
+  text-align: center;
+}
+
+.typewriter-text{
+  padding: 2.3rem;
+  font-size:1.2rem;
+}
