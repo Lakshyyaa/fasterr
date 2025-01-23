@@ -1,4 +1,5 @@
 .history
 server/.history
+client/.history
 server/node_modules
 client/node_modules
